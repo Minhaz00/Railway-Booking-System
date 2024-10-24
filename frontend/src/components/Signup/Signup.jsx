@@ -10,6 +10,10 @@ const Signup = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle signup logic (e.g., API call)
+
+    
+
+
     if (password !== confirmPassword) {
       alert("Passwords don't match!");
       return;
