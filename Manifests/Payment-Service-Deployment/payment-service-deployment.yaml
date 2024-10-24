@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payment-service
+  template:
+    metadata:
+      labels:
+        app: payment-service
+    spec:
+      containers:
+      - name: payment-service
+        image: railway-booking-payment-service:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: PORT
+          value: "3000"
+        - name: GMAIL_USER
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: GMAIL_USER
+        - name: GMAIL_PASS
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: GMAIL_PASS
+        - name: RABBITMQ_URL
+          value: "amqp://$(RABBITMQ_DEFAULT_USER):$(RABBITMQ_DEFAULT_PASS)@rabbitmq:5672"
+        envFrom:
+        - secretRef:
+            name: app-secrets
+
+---
+# Payment Service Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-service
+spec:
+  selector:
+    app: payment-service
+  ports:
+  - port: 3000
+    targetPort: 3000
+  type: ClusterIP

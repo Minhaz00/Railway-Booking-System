@@ -18,7 +18,8 @@ class Train extends Model {
 
 // Define the Train model
 Train.init({
-  id: {
+  id: {clear
+    
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true,

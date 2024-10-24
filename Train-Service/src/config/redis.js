@@ -1,5 +1,5 @@
 const redis = require('redis');
-const host = process.env.REDIS_HOST || 'localhost'; // This will be 'redis' in Docker
+const host = process.env.REDIS_HOST || 'redis'; // This will be 'redis' in Docker
 const redisClient = redis.createClient({
   url: `redis://${host}:6379`,
 });
