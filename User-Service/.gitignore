@@ -39,3 +39,5 @@ jest/
 # Miscellaneous
 *.tgz
 *.zip
+
+.env
