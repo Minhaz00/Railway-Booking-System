@@ -3,7 +3,7 @@ name: Train Service Docker image test, build and push
 on:
   push:
     branches:
-      - main_
+      - main
     paths:
       - 'Train-Service/**'
   pull_request:
