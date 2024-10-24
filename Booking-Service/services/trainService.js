@@ -1,4 +1,4 @@
-const Train = require("../models/train");
+const Train = require("../models/Train");
 const sequelize = require("../config/database");
 class TrainService {
   // Find all trains
