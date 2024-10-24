@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: train-service
-          image: your-image-repo/train-service:latest
+          image: minhaz71/railway-booking-train-service:latest
           ports:
             - containerPort: 3000
           env:
