@@ -1,0 +1,48 @@
+version: '3'
+services:
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  booking-service:
+    build: ./Booking-Service
+    ports:
+      - "3001:3001"
+    depends_on:
+      - redis
+      - rabbitmq
+    environment:
+      - REDIS_HOST=redis
+      - RABBITMQ_URL=amqp://rabbitmq:5672
+
+  train-db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: yourpassword
+      POSTGRES_DB: trainservice
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./train-service/src/db:/docker-entrypoint-initdb.d
+
+  train-service:
+    build: ./train-service-new
+    ports:
+      - "3002:3002"
+    depends_on:
+      - train-db
+      - rabbitmq
+    environment:
+      - DB_USER=postgres
+      - DB_PASSWORD=yourpassword
+      - DB_HOST=train-db
+      - DB_NAME=trainservice
+      - DB_PORT=5432
