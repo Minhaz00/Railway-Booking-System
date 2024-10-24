@@ -1,7 +1,7 @@
 const trainService = require("../services/trainService");
 const Train = require("../models/train");
 const { setAsync, delAsync, getAsync, redisClient } = require("../config/redis"); // Assuming you're using Redis
-
+const rabbitMQService = require('../services/rabbitMQService');
 const BOOKING_LOCK_PREFIX = "booking_lock_";
 const LOCK_EXPIRE_TIME = 50000;
 class TrainController {
@@ -190,6 +190,11 @@ class TrainController {
       const updatedTrain = await trainService.getTrainById(trainId);
       console.log("Updated Train Seat Status:", updatedTrain.seatStatus);
       await setAsync(redisKey, JSON.stringify(updatedSeatStatus));
+
+      const message = { trainId, coachNumber, seatNumber, status, updatedAt: new Date().toISOString() };
+      await rabbitMQService.sendMessage(message);
+
+
       return res.json({
         message: "Seat status updated successfully.",
         seat: updatedTrain.seatStatus[coachIndex][seatNum - 1], // Access updated seat status
