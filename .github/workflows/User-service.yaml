@@ -5,12 +5,12 @@ on:
     branches:
       - main
     paths:
-      - 'User-Service/**'
+      - User-Service/**
   pull_request:
     branches:
       - main
     paths:
-      - 'User-Service/**'
+      - User-Service/**
 
 jobs:
   test:
@@ -74,7 +74,7 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Copy manifest file to Kubernetes master node
-        run: scp -o StrictHostKeyChecking=no -r ./Manifests/User-service-Deployment ubuntu@${{ secrets.MASTER_IP }}:/home/ubuntu/Manifests/
+        run: scp -o StrictHostKeyChecking=no -r ./Manifests/User-Service-Deployment/* ubuntu@${{ secrets.MASTER_IP }}:/home/ubuntu/Manifests/User-Service-Deployment/
 
       - name: Deploy to Kubernetes
         run: |
