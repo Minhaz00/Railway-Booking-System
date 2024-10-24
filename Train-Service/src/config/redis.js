@@ -1,8 +1,7 @@
 const redis = require('redis');
-
-// Create a Redis client
+const host = process.env.REDIS_HOST || 'localhost'; // This will be 'redis' in Docker
 const redisClient = redis.createClient({
-  url: 'redis://localhost:6379', // Update the URL if needed
+  url: `redis://${host}:6379`,
 });
 
 // Handle connection events
