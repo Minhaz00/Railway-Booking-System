@@ -5,12 +5,12 @@ on:
     branches:
       - main
     paths:
-      - api-Gateway-Service/**
+      - api-gateway-service/**
   pull_request:
     branches:
       - main
     paths:
-      - api-Gateway-Service/**
+      - api-gateway-service/**
 
 jobs:
   # test:
@@ -52,7 +52,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
-          context: ./Api-Gateway-Service
+          context: ./api-gateway-service
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/railway-booking-api-gateway-service:latest
 
