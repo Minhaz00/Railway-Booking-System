@@ -5,14 +5,11 @@ const { connectDB, disconnectDB } = require('../config/database');
 let mongoServer;
 
 beforeAll(async () => {
-  // Create the MongoDB Memory Server
   mongoServer = await MongoMemoryServer.create();
   const mongoUri = mongoServer.getUri();
   
-  // Disconnect from any existing connection
   await disconnectDB();
   
-  // Connect to the in-memory database
   await connectDB(mongoUri);
 });
 
