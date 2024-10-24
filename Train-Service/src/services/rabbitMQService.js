@@ -1,6 +1,6 @@
 // services/rabbitMQService.js
 const amqp = require('amqplib');
-
+const rabbitMQConfig = require('../config/rabbitMQ');
 class RabbitMQService {
     constructor() {
         this.connection = null;
