@@ -58,3 +58,23 @@ jobs:
 
       - name: Logout from Docker Hub
         run: docker logout
+  
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Copy manifest file to Kubernetes master node
+        run: scp -o StrictHostKeyChecking=no ./Manifests/User-Service-deploy.yml ubuntu@${{ secrets.MASTER_IP }}:/home/ubuntu/Manifests/User-Service-deploy.yml
+
+      - name: Deploy to Kubernetes
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.MASTER_IP }} "kubectl apply -f /home/ubuntu/Manifests/User-Service-Deployment/*.yml"
