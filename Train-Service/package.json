@@ -11,24 +11,26 @@
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
-    "express": "^4.18.2",
-    "pg": "^8.11.3",
-    "sequelize": "^6.37.1",
-    "dotenv": "^16.4.5",
     "cors": "^2.8.5",
-    "express-validator": "^7.0.1"
+    "dotenv": "^16.4.5",
+    "express": "^4.18.2",
+    "express-validator": "^7.0.1",
+    "pg": "^8.11.3",
+    "sequelize": "^6.37.1"
   },
   "devDependencies": {
     "jest": "^29.7.0",
-    "supertest": "^6.3.3",
+    "nodemon": "^3.1.7",
     "sequelize-mock": "^0.10.2",
-    "nodemon": "^3.1.0"
+    "supertest": "^6.3.3"
   },
   "jest": {
     "testEnvironment": "node",
     "coveragePathIgnorePatterns": [
       "/node_modules/"
     ],
-    "setupFilesAfterEnv": ["./tests/setup.js"]
+    "setupFilesAfterEnv": [
+      "./tests/setup.js"
+    ]
   }
 }

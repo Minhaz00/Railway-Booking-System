@@ -1,11 +1,21 @@
-// src/controllers/proxyController.js
 const proxyService = require('../services/proxyService');
+const dotenv = require('dotenv');
+dotenv.config();
 
-// Proxy requests to Service 1
-const proxyToService1 = proxyService('http://service1:4001');
+// Log if the URLs are not set
+if (!process.env.USER_SERVICE_URL) {
+    console.error('USER_SERVICE_URL is not defined in .env');
+}
 
-// Proxy requests to Service 2
-const proxyToService2 = proxyService('http://service2:4002');
+if (!process.env.TRAIN_SERVICE_URL) {
+    console.error('TRAIN_SERVICE_URL is not defined in .env');
+}
+
+// Proxy requests to Service 1 using environment variable
+const proxyToService1 = proxyService(process.env.USER_SERVICE_URL);
+
+// Proxy requests to Service 2 using environment variable
+const proxyToService2 = proxyService(process.env.TRAIN_SERVICE_URL);
 
 module.exports = {
     proxyToService1,
