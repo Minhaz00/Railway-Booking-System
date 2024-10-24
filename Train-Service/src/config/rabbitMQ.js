@@ -1,5 +1,6 @@
 // config/rabbitMQConfig.js
+const uri = process.env.RABBITMQ_URL
 module.exports = {
-    url: 'amqp://localhost',
+    url: uri,
     queue: 'seatStatusQueue',
 };
