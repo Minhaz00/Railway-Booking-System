@@ -13,6 +13,8 @@ app.use(express.json());
 app.use(morgan('dev', { stream: { write: message => logger.info(message.trim()) } }));
 connectDB();
 
+
+
 // Request logging middleware
 // app.use((req, res, next) => {
 //   logger.info(`${req.method} ${req.url}`);
