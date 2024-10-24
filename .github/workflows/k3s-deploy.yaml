@@ -10,12 +10,13 @@ on:
     branches:
       - main
     paths:
-      - ansible/**
+      - 'ansible/**'
 
 jobs:
   deploy:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v3

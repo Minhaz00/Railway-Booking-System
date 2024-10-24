@@ -5,12 +5,12 @@ on:
     branches:
       - main
     paths:
-      - Train-Service/**
+      - 'Train-Service/**'
   pull_request:
     branches:
       - main
     paths:
-      - Train-Service/**
+      - 'Train-Service/**'
 
 jobs:
   test:
