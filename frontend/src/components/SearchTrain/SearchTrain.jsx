@@ -1,8 +1,4 @@
 import React, { useState } from 'react';
-import { Search } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 
 const TrainBooking = () => {
   const [source, setSource] = useState('');
@@ -36,97 +32,242 @@ const TrainBooking = () => {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-4 space-y-4">
+    <div className="container">
       {/* Search Form */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Search Trains</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSearch} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label htmlFor="source" className="block text-sm font-medium">
-                  From
-                </label>
-                <Input
-                  id="source"
-                  placeholder="Enter source station"
-                  value={source}
-                  onChange={(e) => setSource(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <label htmlFor="destination" className="block text-sm font-medium">
-                  To
-                </label>
-                <Input
-                  id="destination"
-                  placeholder="Enter destination station"
-                  value={destination}
-                  onChange={(e) => setDestination(e.target.value)}
-                  required
-                />
-              </div>
+      <div className="search-card">
+        <h2 className="card-title">Search Trains</h2>
+        <form onSubmit={handleSearch} className="search-form">
+          <div className="form-grid">
+            <div className="form-group">
+              <label htmlFor="source">From</label>
+              <input
+                id="source"
+                type="text"
+                placeholder="Enter source station"
+                value={source}
+                onChange={(e) => setSource(e.target.value)}
+                required
+                className="input-field"
+              />
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              <Search className="w-4 h-4 mr-2" />
-              {loading ? 'Searching...' : 'Search Trains'}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+            <div className="form-group">
+              <label htmlFor="destination">To</label>
+              <input
+                id="destination"
+                type="text"
+                placeholder="Enter destination station"
+                value={destination}
+                onChange={(e) => setDestination(e.target.value)}
+                required
+                className="input-field"
+              />
+            </div>
+          </div>
+          <button 
+            type="submit" 
+            className="search-button"
+            disabled={loading}
+          >
+            {loading ? 'Searching...' : 'Search Trains'}
+          </button>
+        </form>
+      </div>
 
       {/* Error Message */}
       {error && (
-        <div className="bg-red-50 text-red-600 p-4 rounded-md">
+        <div className="error-message">
           {error}
         </div>
       )}
 
       {/* Results */}
       {trains.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Available Trains</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {trains.map((train) => (
-                <div
-                  key={train.id}
-                  className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
-                >
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div>
-                      <p className="text-sm text-gray-500">Train Number</p>
-                      <p className="font-medium">{train.trainNumber}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Departure</p>
-                      <p className="font-medium">{train.departureTime}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Arrival</p>
-                      <p className="font-medium">{train.arrivalTime}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Price</p>
-                      <p className="font-medium">₹{train.price}</p>
-                    </div>
+        <div className="results-card">
+          <h2 className="card-title">Available Trains</h2>
+          <div className="trains-list">
+            {trains.map((train) => (
+              <div key={train.id} className="train-card">
+                <div className="train-details">
+                  <div className="detail-group">
+                    <span className="detail-label">Train Number</span>
+                    <span className="detail-value">{train.trainNumber}</span>
                   </div>
-                  <div className="mt-4">
-                    <Button className="w-full md:w-auto">
-                      Book Now
-                    </Button>
+                  <div className="detail-group">
+                    <span className="detail-label">Departure</span>
+                    <span className="detail-value">{train.departureTime}</span>
+                  </div>
+                  <div className="detail-group">
+                    <span className="detail-label">Arrival</span>
+                    <span className="detail-value">{train.arrivalTime}</span>
+                  </div>
+                  <div className="detail-group">
+                    <span className="detail-label">Price</span>
+                    <span className="detail-value">₹{train.price}</span>
                   </div>
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+                <button className="book-button">
+                  Book Now
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
       )}
+
+      <style jsx>{`
+        .container {
+          max-width: 1000px;
+          margin: 0 auto;
+          padding: 20px;
+        }
+
+        .search-card, .results-card {
+          background: white;
+          border-radius: 8px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          padding: 20px;
+          margin-bottom: 20px;
+        }
+
+        .card-title {
+          font-size: 24px;
+          color: #333;
+          margin: 0 0 20px 0;
+        }
+
+        .search-form {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+        }
+
+        .form-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+          .form-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+
+        .form-group {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        label {
+          font-size: 14px;
+          color: #555;
+          font-weight: 500;
+        }
+
+        .input-field {
+          width: 100%;
+          padding: 10px;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          font-size: 16px;
+          transition: border-color 0.2s;
+        }
+
+        .input-field:focus {
+          outline: none;
+          border-color: #2563eb;
+        }
+
+        .search-button {
+          background: #2563eb;
+          color: white;
+          border: none;
+          padding: 12px 24px;
+          border-radius: 4px;
+          font-size: 16px;
+          cursor: pointer;
+          transition: background-color 0.2s;
+        }
+
+        .search-button:hover {
+          background: #1d4ed8;
+        }
+
+        .search-button:disabled {
+          background: #93c5fd;
+          cursor: not-allowed;
+        }
+
+        .error-message {
+          background: #fee2e2;
+          color: #dc2626;
+          padding: 12px;
+          border-radius: 4px;
+          margin-bottom: 20px;
+        }
+
+        .trains-list {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+        }
+
+        .train-card {
+          border: 1px solid #ddd;
+          border-radius: 8px;
+          padding: 16px;
+          transition: background-color 0.2s;
+        }
+
+        .train-card:hover {
+          background: #f8fafc;
+        }
+
+        .train-details {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 16px;
+          margin-bottom: 16px;
+        }
+
+        @media (max-width: 768px) {
+          .train-details {
+            grid-template-columns: repeat(2, 1fr);
+          }
+        }
+
+        .detail-group {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .detail-label {
+          font-size: 12px;
+          color: #666;
+        }
+
+        .detail-value {
+          font-size: 16px;
+          font-weight: 500;
+          color: #333;
+        }
+
+        .book-button {
+          background: #22c55e;
+          color: white;
+          border: none;
+          padding: 8px 16px;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: background-color 0.2s;
+        }
+
+        .book-button:hover {
+          background: #16a34a;
+        }
+      `}</style>
     </div>
   );
 };
