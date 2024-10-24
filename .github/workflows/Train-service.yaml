@@ -5,15 +5,16 @@ on:
     branches:
       - main
     paths:
-      - 'Train-Service/**'
+      - Train-Service/**
   pull_request:
     branches:
       - main
     paths:
-      - 'Train-Service/**'
+      - Train-Service/**
 
 jobs:
   test:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
 
     steps:
@@ -72,9 +73,13 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
+      - name: Create target directory on the remote server
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.MASTER_IP }} "mkdir -p /home/ubuntu/Manifests/Train-Service-Deployment/"
+
       - name: Copy manifest file to Kubernetes master node
-        run: scp -o StrictHostKeyChecking=no -r ./Manifests/Train-service-Deployment ubuntu@${{ secrets.MASTER_IP }}:/home/ubuntu/Manifests/
+        run: scp -o StrictHostKeyChecking=no -r ./Manifests/Train-service-Deployment/* ubuntu@${{ secrets.MASTER_IP }}:/home/ubuntu/Manifests/Train-service-Deployment/
 
       - name: Deploy to Kubernetes
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.MASTER_IP }} "kubectl apply -f /home/ubuntu/Manifests/Train-Service-Deployment/*.yml"
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.MASTER_IP }} "kubectl apply -f /home/ubuntu/Manifests/Train-Service-Deployment/"

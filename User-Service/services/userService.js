@@ -11,7 +11,7 @@ const createUser = async (userData) => {
   }
 
   // Check if the username already exists
-  const existingUsername = await User.findOne({  });
+  const existingUsername = await User.findOne({ username });
   if (existingUsername) {
     throw new Error('Username already in use');
   }
