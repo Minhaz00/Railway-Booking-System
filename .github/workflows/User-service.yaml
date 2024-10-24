@@ -72,6 +72,10 @@ jobs:
         uses: webfactory/ssh-agent@v0.8.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      
+      - name: Create target directory on the remote server
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.MASTER_IP }} "mkdir -p /home/ubuntu/Manifests/User-Service-Deployment/"
 
       - name: Copy manifest file to Kubernetes master node
         run: scp -o StrictHostKeyChecking=no -r ./Manifests/User-Service-Deployment/* ubuntu@${{ secrets.MASTER_IP }}:/home/ubuntu/Manifests/User-Service-Deployment/
