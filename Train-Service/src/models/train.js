@@ -57,7 +57,7 @@ Train.init({
   },
   // Initialize seat status for each coach as 'FREE'
   seatStatus: {
-    type: DataTypes.ARRAY(DataTypes.ARRAY(DataTypes.ENUM('FREE', 'ON_HOLD', 'BLOCKED'))),
+    type: DataTypes.JSONB,
     allowNull: false,
     defaultValue: Array(10).fill(Array(10).fill('FREE')), // Example static value for testing
   },

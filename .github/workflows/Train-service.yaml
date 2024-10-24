@@ -1,16 +1,16 @@
-name: User Service Docker image test, build and push
+name: Train Service Docker image test, build and push
 
 on:
   push:
     branches:
-      - main
+      - main_
     paths:
-      - 'User-Service/**'
+      - 'Train-Service/**'
   pull_request:
     branches:
       - main
     paths:
-      - 'User-Service/**'
+      - 'Train-Service/**'
 
 jobs:
   test:
@@ -26,11 +26,11 @@ jobs:
           node-version: '18'
 
       - name: Install dependencies
-        working-directory: ./User-Service
+        working-directory: ./Train-Service
         run: npm install
 
       - name: Run unit tests
-        working-directory: ./User-Service
+        working-directory: ./Train-Service
         run: npm test
   build:
     runs-on: ubuntu-latest
@@ -52,9 +52,9 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
-          context: ./User-Service
+          context: ./Train-Service
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/railway-booking-user-service:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/railway-booking-train-service:latest
 
       - name: Logout from Docker Hub
         run: docker logout
@@ -73,8 +73,8 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Copy manifest file to Kubernetes master node
-        run: scp -o StrictHostKeyChecking=no -r ./Manifests/User-service-Deployment ubuntu@${{ secrets.MASTER_IP }}:/home/ubuntu/Manifests/
+        run: scp -o StrictHostKeyChecking=no -r ./Manifests/Train-service-Deployment ubuntu@${{ secrets.MASTER_IP }}:/home/ubuntu/Manifests/
 
       - name: Deploy to Kubernetes
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.MASTER_IP }} "kubectl apply -f /home/ubuntu/Manifests/User-Service-Deployment/*.yml"
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.MASTER_IP }} "kubectl apply -f /home/ubuntu/Manifests/Train-Service-Deployment/*.yml"
