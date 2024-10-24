@@ -82,4 +82,4 @@ jobs:
 
       - name: Deploy to Kubernetes
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.MASTER_IP }} "kubectl apply -f /home/ubuntu/Manifests/User-Service-Deployment/*.yml"
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.MASTER_IP }} "kubectl apply -f /home/ubuntu/Manifests/User-Service-Deployment/"
