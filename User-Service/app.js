@@ -17,7 +17,7 @@ if (process.env.NODE_ENV !== 'test') {
   connectDB();
 }
 
-
+// common routes
 app.use('/api/users', userRoutes);
 
 app.use((err, req, res, next) => {
