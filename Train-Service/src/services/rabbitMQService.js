@@ -1,6 +1,7 @@
 // services/rabbitMQService.js
 const amqp = require('amqplib');
 const rabbitMQConfig = require('../config/rabbitMQ');
+const host = process.env.RABBITMQ_HOST || 'localhost';
 class RabbitMQService {
     constructor() {
         this.connection = null;
@@ -11,7 +12,7 @@ class RabbitMQService {
     async connect() {
         try {
             if (!this.connection) {
-                this.connection = await amqp.connect('amqp://localhost');
+                this.connection = await amqp.connect(`amqp://admin:admin@${host}:5672`);
                 this.channel = await this.connection.createChannel();
                 await this.channel.assertQueue(this.queue, { durable: true });
                 console.log('RabbitMQ connection and channel successfully initialized');

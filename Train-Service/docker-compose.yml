@@ -1,30 +1,6 @@
 version: '3.8'
 
 services:
-  train-service:
-    build: .
-    ports:
-      - "3000:3000"
-    environment:
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_NAME=traindb
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - RABBITMQ_HOST=rabbitmq
-      - RABBITMQ_PORT=5672
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    networks:
-      - train-network
-
   postgres:
     image: postgres:15-alpine
     ports:
@@ -56,22 +32,52 @@ services:
       retries: 5
 
   rabbitmq:
-        image: rabbitmq:3.7.28-management
-        #container_name: rabbitmq
-       
-        environment:
-            RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE:-secret_cookie}
-            RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-admin}
-            RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:-admin}
-        ports:
-            - 5672:5672    #amqp
-            - 15672:15672  #http
-            - 15692:15692  #prometheus
-        healthcheck:
-          test: [ "CMD", "rabbitmqctl", "status"]
-          interval: 5s
-          timeout: 20s
-          retries: 5
+    image: rabbitmq:3.7.28-management
+    environment:
+      - RABBITMQ_ERLANG_COOKIE=${RABBITMQ_ERLANG_COOKIE:-secret_cookie}
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER:-admin}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS:-admin}
+    ports:
+      - "5672:5672"    # AMQP protocol
+      - "15672:15672"  # Management UI
+      - "15692:15692"  # Prometheus metrics
+    # volumes:
+    #   - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - train-network
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 5s
+      timeout: 20s
+      retries: 5
+
+  train-service:
+    build: ./
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=traindb
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER:-admin}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS:-admin}
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - train-network
+
 
 volumes:
   postgres_data:
