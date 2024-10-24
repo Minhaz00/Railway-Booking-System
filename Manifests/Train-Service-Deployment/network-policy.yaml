@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-train-network
+spec:
+  podSelector:
+    matchLabels:
+      app: train-service
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: redis
+        - podSelector:
+            matchLabels:
+              app: postgres
+        - podSelector:
+            matchLabels:
+              app: rabbitmq
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app: redis
+        - podSelector:
+            matchLabels:
+              app: postgres
+        - podSelector:
+            matchLabels:
+              app: rabbitmq
