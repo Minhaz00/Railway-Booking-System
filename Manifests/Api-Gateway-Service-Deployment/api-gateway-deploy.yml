@@ -23,11 +23,11 @@ spec:
         - name: PORT
           value: "5000"
         - name: USER_SERVICE_URL
-          value: "http://app:4000"
+          value: "http://13.213.1.152:4000"
         # - name: TRAIN_SERVICE_URL
         #   value: "http://train-service:4002"
         - name: PAYMENT_SERVICE_URL
-          value: "http://payment-service:3000"
+          value: "http://13.213.1.152:3000"
         # - name: NOTIFICATION_SERVICE_URL
         #   value: "http://notification-service:4004"
 ---
