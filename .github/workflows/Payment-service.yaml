@@ -82,7 +82,6 @@ jobs:
       - name: Deploy to Kubernetes
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.MASTER_IP }} "
-            kubectl apply -f /home/ubuntu/Manifests/Payment-Service-Deployment/rabbitmq-deployment.yaml &&
             kubectl apply -f /home/ubuntu/Manifests/Payment-Service-Deployment/payment-service-deployment.yaml
           "
 
