@@ -12,7 +12,6 @@ const app = express();
 app.use(express.json());
 app.use(morgan('dev'));
 
-// Routes
 app.use('/api', proxyRoutes);
 
 // Start server

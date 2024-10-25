@@ -1,52 +1,48 @@
+const sequelize = require('../config/database'); // Adjust path as necessary
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
 
 const Train = sequelize.define('Train', {
-  id: {
-    type: DataTypes.UUID,
-    defaultValue: DataTypes.UUIDV4,
-    primaryKey: true
-  },
   name: {
     type: DataTypes.STRING,
-    allowNull: false
-  },
-  type: {
-    type: DataTypes.ENUM('EXPRESS', 'LOCAL', 'INTERCITY'),
-    allowNull: false
+    allowNull: false,
   },
   source: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
   },
   destination: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
   },
   departureTime: {
     type: DataTypes.TIME,
-    allowNull: false
+    allowNull: false,
   },
   arrivalTime: {
     type: DataTypes.TIME,
-    allowNull: false
+    allowNull: false,
   },
   totalCoaches: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: false,
   },
   seatsPerCoach: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: false,
   },
-  frequency: {
-    type: DataTypes.ARRAY(DataTypes.STRING),
-    allowNull: false
+  seatStatus: {
+    type: DataTypes.ARRAY(DataTypes.STRING), // Ensure this is set correctly
+    allowNull: false,
   },
-  status: {
-    type: DataTypes.ENUM('ACTIVE', 'CANCELLED', 'MAINTENANCE'),
-    defaultValue: 'ACTIVE'
-  }
+  
+  createdAt: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+  },
 });
 
 module.exports = Train;

@@ -10,8 +10,8 @@ const createUser = async (userData) => {
     throw new Error('Email already in use');
   }
 
-  // Check if the username already exists
-  const existingUsername = await User.findOne({  });
+  // Check if the username already exists, otherwise throw an error
+  const existingUsername = await User.findOne({ username });
   if (existingUsername) {
     throw new Error('Username already in use');
   }

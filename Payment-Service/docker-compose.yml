@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"     # AMQP
+      - "15672:15672"   # Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: myuser
+      RABBITMQ_DEFAULT_PASS: mypassword
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - train-network
+
+  payment-service:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      GMAIL_USER: auth.poridhi.io@gmail.com
+      GMAIL_PASS: auth.poridhi.io.123
+      RABBITMQ_URL: amqp://myuser:mypassword@rabbitmq:5672  # Include user credentials
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - train-network
+
+networks:
+  train-network:
+    driver: bridge
