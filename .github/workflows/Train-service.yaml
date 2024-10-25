@@ -82,6 +82,9 @@ jobs:
       - name: Deploy to Kubernetes
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.MASTER_IP }} "
+            kubectl apply -f /home/ubuntu/Manifests/Train-Booking-Service-Deployment/rabbitmq-deployment.yaml &&
+            kubectl apply -f /home/ubuntu/Manifests/Train-Booking-Service-Deployment/redis-deployment.yaml &&
+            kubectl apply -f /home/ubuntu/Manifests/Train-Booking-Service-Deployment/postgres-deployment.yaml &&
             kubectl apply -f /home/ubuntu/Manifests/Train-Booking-Service-Deployment/train-booking-service-deployment.yaml
           "
 
