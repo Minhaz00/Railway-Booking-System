@@ -1,0 +1,130 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: ./User-Service
+      dockerfile: Dockerfile  # Ensure your Dockerfile is in the same directory
+    ports:
+      - "4000:4000"  # Map host port 4000 to container port 4000
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/Railway 
+      - PORT=4000  
+      - BCRYPT_SALT_ROUNDS=10  
+    depends_on:
+      - mongodb  
+    volumes:
+      - .:/usr/src/app  
+    restart: always 
+
+  mongodb:
+    image: mongo:latest  
+    ports:
+      - "27017:27017"  
+    volumes:
+      - mongo-data:/data/db  
+
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"     # AMQP
+      - "15672:15672"   # Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: myuser
+      RABBITMQ_DEFAULT_PASS: mypassword
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    networks:
+      - train-network
+
+
+  train-service:
+    build: ./Train-Booking-Service
+    ports:
+      - "7000:7000"
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=postgres
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_URL=amqp://myuser:mypassword@rabbitmq:5672
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - train-network
+
+  postgres:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=traindb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - train-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - train-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 5s
+      retries: 5
+  
+  payment-service:
+    build: ./Payment-Service
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      GMAIL_USER: auth.poridhi.io@gmail.com
+      GMAIL_PASS: 1234
+      RABBITMQ_URL: amqp://myuser:mypassword@rabbitmq:5672  # Include user credentials
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - train-network
+
+  proxy-gateway:
+    build:
+      context: ./proxy-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - TRAIN_API_URL=http://<PUBLIC_IP>:7000  # Replace with your actual API URL
+
+volumes:
+  mongo-data:  
+  postgres_data:
+
+
+networks:
+  train-network:
+    driver: bridge  
