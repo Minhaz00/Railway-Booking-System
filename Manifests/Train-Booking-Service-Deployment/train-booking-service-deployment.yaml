@@ -16,7 +16,7 @@ spec:
         - name: train-service
           image: minhaz71/railway-booking-train-booking-service:latest
           ports:
-            - containerPort: 3000
+            - containerPort: 7000
           env:
             - name: DB_HOST
               value: "postgres"

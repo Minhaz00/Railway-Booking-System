@@ -19,7 +19,7 @@ services:
 
 
   train-service:
-    build: .
+    build: ./Train-Booking-Service
     ports:
       - "7000:7000"
     environment:
@@ -72,6 +72,9 @@ services:
       interval: 2s
       timeout: 5s
       retries: 5
+
+  app:
+    build: ./User-Service
 
  
 volumes:
