@@ -246,7 +246,7 @@ spec:
     spec:
       containers:
       - name: train-service
-        image: train-service:latest  # Update with your actual image
+        image: minhaz71/railway-booking-train-booking-service:latest # Update with your actual image
         ports:
         - containerPort: 7000
         envFrom:

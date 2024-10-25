@@ -14,7 +14,7 @@ app.use(morgan('dev'))
 // Start the server
 async function startServer() {
   try {
-    // 1. Initialize RabbitMQ connection
+
     await rabbitMQService.connect();
     console.log('RabbitMQ connected successfully');
 
