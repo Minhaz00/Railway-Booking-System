@@ -21,11 +21,11 @@ services:
   train-service:
     build: .
     ports:
-      - "3000:3000"
+      - "7000:7000"
     environment:
       - DB_HOST=postgres
       - DB_PORT=5432
-      - DB_NAME=traindb
+      - DB_NAME=postgres
       - DB_USER=postgres
       - DB_PASSWORD=postgres
       - REDIS_HOST=redis

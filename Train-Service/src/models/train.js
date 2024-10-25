@@ -1,6 +1,7 @@
-const { DataTypes, Model } = require('sequelize');
-const sequelize = require('../config/database');
+const sequelize = require('../config/database'); // Adjust path as necessary
+const { DataTypes } = require('sequelize');
 
+<<<<<<< HEAD
 class Train extends Model {
   // Method to calculate free seats
   getFreeSeatsCount() {
@@ -24,12 +25,11 @@ Train.init({
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
   },
+=======
+const Train = sequelize.define('Train', {
+>>>>>>> 466858256b934e42ea7155fedb8440db692482b0
   name: {
     type: DataTypes.STRING,
-    allowNull: false,
-  },
-  type: {
-    type: DataTypes.ENUM('EXPRESS', 'LOCAL', 'INTERCITY'),
     allowNull: false,
   },
   source: {
@@ -56,35 +56,28 @@ Train.init({
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  // Initialize seat status for each coach as 'FREE'
   seatStatus: {
+<<<<<<< HEAD
     type: DataTypes.JSONB,
     allowNull: false,
     defaultValue: Array(10).fill(Array(10).fill('FREE')), // Example static value for testing
   },
   frequency: {
     type: DataTypes.ARRAY(DataTypes.STRING),
+=======
+    type: DataTypes.ARRAY(DataTypes.STRING), // Ensure this is set correctly
+>>>>>>> 466858256b934e42ea7155fedb8440db692482b0
     allowNull: false,
   },
-  status: {
-    type: DataTypes.ENUM('ACTIVE', 'CANCELLED', 'MAINTENANCE'),
-    defaultValue: 'ACTIVE',
+  
+  createdAt: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
   },
-  // Define a virtual attribute
-  freeSeats: {
-    type: DataTypes.VIRTUAL,
-    get() {
-      return this.getFreeSeatsCount(); // Call the method to get the count
-    }
-  }
-}, {
-  sequelize,
-  modelName: 'Train',
+  updatedAt: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+  },
 });
-
-// Example usage of freeSeats
-// Train.findByPk(trainId).then(train => {
-//   console.log(`Free seats: ${train.freeSeats}`); // Accessing the virtual attribute
-// });
 
 module.exports = Train;

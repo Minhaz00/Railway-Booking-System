@@ -1,16 +1,16 @@
-name: Train Service Docker image test, build and push
+name: Train Booking Service Docker image build, push and deploy
 
 on:
   push:
     branches:
       - main
     paths:
-      - Train-Service/**
+      - 'Train-Booking-Service/**'
   pull_request:
     branches:
       - main
     paths:
-      - Train-Service/**
+      - 'Train-Booking-Service/**'
 
 jobs:
   # test:
@@ -54,7 +54,7 @@ jobs:
         with:
           context: ./Train-Service
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/railway-booking-train-service:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/railway-booking-train-booking-service:latest
 
       - name: Logout from Docker Hub
         run: docker logout
@@ -74,18 +74,14 @@ jobs:
 
       - name: Create target directory on the remote server
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.MASTER_IP }} "mkdir -p /home/ubuntu/Manifests/Train-Service-Deployment/"
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.MASTER_IP }} "mkdir -p /home/ubuntu/Manifests/Train-Booking-Service-Deployment/"
 
       - name: Copy manifest file to Kubernetes master node
-        run: scp -o StrictHostKeyChecking=no -r ./Manifests/Train-Service-Deployment/* ubuntu@${{ secrets.MASTER_IP }}:/home/ubuntu/Manifests/Train-Service-Deployment/
+        run: scp -o StrictHostKeyChecking=no -r ./Manifests/Train-Booking-Service-Deployment/* ubuntu@${{ secrets.MASTER_IP }}:/home/ubuntu/Manifests/Train-Booking-Service-Deployment/
 
       - name: Deploy to Kubernetes
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.MASTER_IP }} "
-            kubectl apply -f /home/ubuntu/Manifests/Train-Service-Deployment/postgres-deployment.yaml &&
-            kubectl apply -f /home/ubuntu/Manifests/Train-Service-Deployment/rabbitmq-deployment.yaml &&
-            kubectl apply -f /home/ubuntu/Manifests/Train-Service-Deployment/redis-deployment.yaml &&
-            kubectl apply -f /home/ubuntu/Manifests/Train-Service-Deployment/train-service-deployment.yaml &&
-            kubectl apply -f /home/ubuntu/Manifests/Train-Service-Deployment/network-policy.yaml
+            kubectl apply -f /home/ubuntu/Manifests/Train-Booking-Service-Deployment/train-booking-service-deployment.yaml
           "
 
