@@ -8,11 +8,8 @@ async function initiatePaymentLogic(email) {
   console.log(otp)
   otpService.storeOTP(email, otp);
 
-  // Send OTP to email
-  await otpService.sendOTPEmail(email, otp);
-
   // You can add additional logic if required (such as logging)
-  return { message: 'OTP sent to email. Please verify to proceed.' };
+  return { message: `OTP sent to ${email}. Please verify to proceed.` };
 }
 
 // Controller function used for HTTP route

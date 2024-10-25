@@ -8,7 +8,6 @@ async function connect() {
 }
 
 async function getChannel() {
-    
   if (!channel) {
     throw new Error("RabbitMQ channel not initialized");
   }
