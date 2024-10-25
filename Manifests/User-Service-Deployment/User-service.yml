@@ -26,6 +26,13 @@ spec:
           value: "4000"
         - name: BCRYPT_SALT_ROUNDS
           value: "10"
+        resources:
+          requests:
+            cpu: "250m"  # Minimum CPU request
+            memory: "512Mi"  # Minimum memory request
+          limits:
+            cpu: "500m"  # Maximum CPU usage before scaling
+            memory: "1Gi"  # Maximum memory usage before scaling
 ---
 # app-service.yaml
 apiVersion: v1

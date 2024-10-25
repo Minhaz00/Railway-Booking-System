@@ -1,6 +1,23 @@
 version: '3.8'
 
 services:
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"     # AMQP
+      - "15672:15672"   # Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: myuser
+      RABBITMQ_DEFAULT_PASS: mypassword
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    networks:
+      - train-network
+
+
   train-service:
     build: .
     ports:
@@ -11,8 +28,18 @@ services:
       - DB_NAME=traindb
       - DB_USER=postgres
       - DB_PASSWORD=postgres
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_URL=amqp://myuser:mypassword@rabbitmq:5672
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     networks:
       - train-network
 
@@ -28,7 +55,25 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - train-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      timeout: 5s
+      retries: 5
 
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - train-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 5s
+      retries: 5
+
+ 
 volumes:
   postgres_data:
 
