@@ -1,47 +1,50 @@
-/* src/components/Signup.css */
 .signup-container {
-    background: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .signup-container h2 {
-    text-align: center;
-    color: #333;
-  }
-  
-  .signup-container form {
-    margin-top: 20px;
-  }
-  
-  .signup-container div {
-    margin-bottom: 15px;
-  }
-  
-  .signup-container label {
-    display: block;
-    margin-bottom: 5px;
-  }
-  
-  .signup-container input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-  
-  .signup-container button {
-    width: 100%;
-    padding: 10px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .signup-container button:hover {
-    background-color: #218838;
-  }
-  
+  background: #fff;
+  width: 400px; /* Set a fixed width for the box */
+  height: auto; /* Set height to auto for flexibility */
+  padding: 20px;
+  border-radius: 8px; /* Slightly rounded corners */
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2); /* Enhanced shadow for a lifted effect */
+  margin: 50px auto; /* Center the box horizontally and add top margin */
+}
+
+.signup-container h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px; /* Add some space below the heading */
+}
+
+.signup-container form {
+  margin-top: 10px; /* Adjust margin to fit the layout */
+}
+
+.signup-container div {
+  margin-bottom: 15px;
+}
+
+.signup-container label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.signup-container input {
+  width: 100%;
+  padding: 10px; /* Increase padding for comfort */
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.signup-container button {
+  width: 100%;
+  padding: 12px; /* Increase button padding for better usability */
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px; /* Slightly larger font size */
+}
+
+.signup-container button:hover {
+  background-color: #218838;
+}

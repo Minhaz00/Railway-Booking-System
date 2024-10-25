@@ -1,0 +1,60 @@
+.train-detail-container {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    margin: 20px auto;
+  }
+  
+  .train-detail-container h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .compartment {
+    margin: 20px 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #fff;
+  }
+  
+  .compartment h4 {
+    margin-bottom: 10px;
+    color: #555;
+  }
+  
+  .seats {
+    display: flex;
+    flex-wrap: wrap; /* Allows seats to wrap */
+    justify-content: center; /* Center seats within compartment */
+  }
+  
+  .seat {
+    width: 40px; /* Set a fixed width for seats */
+    height: 40px; /* Set a fixed height for seats */
+    margin: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #28a745; /* Default color for available seats */
+    cursor: pointer;
+    transition: background-color 0.3s; /* Smooth color transition */
+  }
+  
+  .seat.occupied {
+    background-color: #ffc107; /* Yellow for occupied seats */
+  }
+  
+  .seat.available:hover {
+    background-color: #218838; /* Darker green on hover for available seats */
+  }
+  
+  .seat.occupied:hover {
+    background-color: #ffc107; /* Keep yellow on hover for occupied seats */
+  }
+  
