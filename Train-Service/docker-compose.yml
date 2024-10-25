@@ -1,6 +1,48 @@
 version: '3.8'
 
 services:
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"     # AMQP
+      - "15672:15672"   # Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: myuser
+      RABBITMQ_DEFAULT_PASS: mypassword
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 5s
+      timeout: 5s
+      retries: 2
+    networks:
+      - train-network
+
+
+  train-service:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=traindb
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_URL=amqp://myuser:mypassword@rabbitmq:5672
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - train-network
+
   postgres:
     image: postgres:15-alpine
     ports:
@@ -15,9 +57,9 @@ services:
       - train-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+      interval: 3s
+      timeout: 3s
+      retries: 2
 
   redis:
     image: redis:7-alpine
@@ -27,58 +69,44 @@ services:
       - train-network
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+      interval: 3s
+      timeout: 3s
+      retries: 2
 
-  rabbitmq:
-    image: rabbitmq:3.7.28-management
-    environment:
-      - RABBITMQ_ERLANG_COOKIE=${RABBITMQ_ERLANG_COOKIE:-secret_cookie}
-      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER:-admin}
-      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS:-admin}
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib
+    container_name: otel-collector
     ports:
-      - "5672:5672"    # AMQP protocol
-      - "15672:15672"  # Management UI
-      - "15692:15692"  # Prometheus metrics
-    # volumes:
-    #   - rabbitmq_data:/var/lib/rabbitmq
-    networks:
-      - train-network
-    healthcheck:
-      test: ["CMD", "rabbitmqctl", "status"]
-      interval: 5s
-      timeout: 20s
-      retries: 5
+      - "4317:4317"
+      - "55682:55681"
+    volumes:
+      - ./otel-collector-config.yml:/etc/otel-collector-config.yml
+    command:
+      --config etc/otel-collector-config.yml
 
-  train-service:
-    build: ./
+
+  tempo:
+    image: grafana/tempo:latest
+    container_name: tempo
     ports:
-      - "3000:3000"
-    environment:
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_NAME=traindb
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - RABBITMQ_HOST=rabbitmq
-      - RABBITMQ_PORT=5672
-      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER:-admin}
-      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS:-admin}
+      - "3100:3100"
+    volumes:
+      - ./tempo.yml:/etc/tempo.yml  # Ensure this points to the correct file
+    command:
+      -config.file=/etc/tempo.yml
 
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "30080:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
     depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    networks:
-      - train-network
+      - tempo
 
-
+ 
 volumes:
   postgres_data:
 

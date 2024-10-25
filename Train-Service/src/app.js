@@ -1,3 +1,4 @@
+require('../tracing');
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -6,6 +7,8 @@ const trainRoutes = require('./routes/trainRoutes');
 const seatRoutes = require('./routes/seatRoute');
 const rabbitMQService = require('./services/rabbitMQService'); // Import RabbitMQ service
 const morgan = require("morgan");
+const { trace } = require('@opentelemetry/api');
+
 
 const app = express();
 
@@ -20,6 +23,7 @@ app.use('/api/trains/seats', seatRoutes);
 const PORT = process.env.PORT || 3000;
 
 async function startServer() {
+  const span = trace.getTracer('rabbitmq-connection').startSpan('RabitMQ Connection');
   try {
     // 1. Initialize RabbitMQ connection
     await rabbitMQService.connect();
@@ -35,6 +39,9 @@ async function startServer() {
     });
   } catch (error) {
     console.error('Unable to start server:', error);
+    span.recordException(error);
+    span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
+    span.end();
   }
 }
 

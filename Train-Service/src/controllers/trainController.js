@@ -28,8 +28,9 @@ class TrainController {
 
   async createTrain(req, res) {
     try {
-      const train = await trainService.createTrain(req.body);
-      res.status(201).json(train);
+      const trainData = req.body;
+      const newTrain = await trainService.createTrain(trainData);
+      res.status(201).json(newTrain);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
