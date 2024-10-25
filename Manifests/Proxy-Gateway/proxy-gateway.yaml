@@ -1,0 +1,45 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proxy-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: proxy-gateway
+  template:
+    metadata:
+      labels:
+        app: proxy-gateway
+    spec:
+      containers:
+      - name: proxy-gateway
+        image: minhaz71/railway-booking-proxy-gateway:latest  # Replace with your actual image
+        ports:
+        - containerPort: 8000
+        env:
+        - name: TRAIN_API_URL
+          value: "http://13.213.1.152:4000"  # Adjust this to your actual Train API service name
+        - name: USER_API_URL
+          value: "http://13.213.1.152:3000"  # Adjust this to your actual User API service name
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "250m"
+            memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: proxy-gateway-service
+spec:
+  selector:
+    app: proxy-gateway
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+  type: ClusterIP

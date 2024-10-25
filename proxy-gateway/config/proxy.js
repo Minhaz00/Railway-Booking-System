@@ -16,6 +16,7 @@ const createProxy = (target) => proxy(target, {
 const setupProxyRoutes = (app, env) => {
   const routes = {
     "/train": process.env.TRAIN_API_URL,
+    "/user": process.env.USER_API_URL
     
   };
 
